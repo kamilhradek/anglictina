@@ -21,7 +21,8 @@ Interaktivní webová aplikace pro učení angličtiny pro české uživatele. U
 
 ## Přidání obsahu
 V objektu `LEVELS` u dané úrovně:
-- slovíčko: přidat do `words` dvojici `["anglicky", "česky"]`;
+- slovíčko: přidat do `words` trojici `["anglicky", "česky", "Krátká anglická věta se slovem."]` (věta se zobrazí pod kartičkou);
+- čtení nahlas zajišťuje funkce `speak()` (Web Speech API, `en-GB`);
 - věta: přidat do `sentences` trojici `["Věta s ___.", "správná odpověď", "český překlad"]`.
 Pro kvíz je potřeba alespoň 4 slovíčka na úroveň.
 

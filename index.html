@@ -28,6 +28,7 @@
   .levels button { padding: 1rem; font-size: 1.1rem; }
   .levels small { display: block; color: var(--muted); font-size: .75rem; }
   .flash { min-height: 150px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 1.8rem; cursor: pointer; user-select: none; border: 2px dashed var(--border); border-radius: 12px; }
+  .example { font-size: 1.1rem; font-style: italic; margin: 1rem 0 .5rem; }
   .options { display: grid; gap: .5rem; margin-top: 1rem; }
   .options button { text-align: left; }
   .correct { border-color: var(--ok) !important; background: color-mix(in srgb, var(--ok) 18%, transparent) !important; }
@@ -60,38 +61,55 @@
    sentences: { text: věta s "___", answer: správné slovo, cs: překlad }  */
 const LEVELS = {
   A1: { name: "Začátečník", words: [
-    ["house","dům"],["water","voda"],["friend","kamarád"],["book","kniha"],["dog","pes"],
-    ["eat","jíst"],["big","velký"],["red","červený"],["school","škola"],["morning","ráno"]],
+    ["house","dům","We live in a small house."],["water","voda","I drink water every day."],["friend","kamarád","He is my best friend."],
+    ["book","kniha","This book is very good."],["dog","pes","The dog is in the garden."],["eat","jíst","We eat dinner at six."],
+    ["big","velký","They have a big car."],["red","červený","She wears a red hat."],["school","škola","My school is near here."],
+    ["morning","ráno","I run every morning."]],
     sentences: [
       ["I ___ a student.","am","Jsem student."],["She ___ a dog.","has","Ona má psa."],
       ["We ___ apples.","like","Máme rádi jablka."],["He ___ to school.","goes","Chodí do školy."]] },
   A2: { name: "Mírně pokročilý", words: [
-    ["borrow","půjčit si"],["weather","počasí"],["ticket","jízdenka"],["usually","obvykle"],["dangerous","nebezpečný"],
-    ["invite","pozvat"],["language","jazyk"],["holiday","dovolená"],["expensive","drahý"],["neighbour","soused"]],
+    ["borrow","půjčit si","Can I borrow your pen?"],["weather","počasí","The weather is nice today."],
+    ["ticket","jízdenka","I bought a train ticket."],["usually","obvykle","I usually get up at seven."],
+    ["dangerous","nebezpečný","This road is very dangerous."],["invite","pozvat","I want to invite you to my party."],
+    ["language","jazyk","English is a useful language."],["holiday","dovolená","We are on holiday in Spain."],
+    ["expensive","drahý","That watch is too expensive."],["neighbour","soused","My neighbour has a cat."]],
     sentences: [
       ["Yesterday I ___ to the cinema.","went","Včera jsem šel do kina."],["She is ___ than her sister.","taller","Je vyšší než její sestra."],
       ["I have ___ finished my homework.","already","Už jsem dokončil domácí úkol."],["There isn't ___ milk.","any","Není tu žádné mléko."]] },
   B1: { name: "Středně pokročilý", words: [
-    ["achieve","dosáhnout"],["environment","životní prostředí"],["experience","zkušenost"],["improve","zlepšit"],["opportunity","příležitost"],
-    ["suggest","navrhnout"],["decision","rozhodnutí"],["although","ačkoli"],["avoid","vyhnout se"],["reliable","spolehlivý"]],
+    ["achieve","dosáhnout","She worked hard to achieve her goal."],["environment","životní prostředí","We must protect the environment."],
+    ["experience","zkušenost","He has a lot of work experience."],["improve","zlepšit","I want to improve my English."],
+    ["opportunity","příležitost","This is a great opportunity."],["suggest","navrhnout","I suggest we take a taxi."],
+    ["decision","rozhodnutí","It was a difficult decision."],["although","ačkoli","Although it rained, we went out."],
+    ["avoid","vyhnout se","Try to avoid sugar."],["reliable","spolehlivý","He is a reliable colleague."]],
     sentences: [
       ["If I ___ rich, I would travel.","were","Kdybych byl bohatý, cestoval bych."],["She suggested ___ early.","leaving","Navrhla odejít brzy."],
       ["I've lived here ___ 2015.","since","Bydlím tu od roku 2015."],["The book ___ written by him.","was","Knihu napsal on."]] },
   B2: { name: "Pokročilý", words: [
-    ["reluctant","neochotný"],["establish","založit"],["consequence","důsledek"],["Furthermore","navíc"],["overcome","překonat"],
-    ["assume","předpokládat"],["witness","svědek"],["thorough","důkladný"],["predict","předpovědět"],["valid","platný"]],
+    ["reluctant","neochotný","He was reluctant to speak."],["establish","založit","They established the company in 1990."],
+    ["consequence","důsledek","Every action has a consequence."],["Furthermore","navíc","Furthermore, the price is low."],
+    ["overcome","překonat","She overcame her fear of flying."],["assume","předpokládat","I assume you are right."],
+    ["witness","svědek","A witness saw the accident."],["thorough","důkladný","We did a thorough check."],
+    ["predict","předpovědět","No one can predict the future."],["valid","platný","Your passport is still valid."]],
     sentences: [
       ["Had I known, I ___ have helped.","would","Kdybych to věděl, pomohl bych."],["He insisted ___ paying.","on","Trval na tom, že zaplatí."],
       ["She is said ___ a genius.","to be","Říká se, že je génius."],["I'm used ___ early.","to getting up","Jsem zvyklý vstávat brzy."]] },
   C1: { name: "Velmi pokročilý", words: [
-    ["ubiquitous","všudypřítomný"],["mitigate","zmírnit"],["scrutiny","podrobné zkoumání"],["ambiguous","nejednoznačný"],["resilient","odolný"],
-    ["perpetual","věčný"],["inherent","vlastní, neodmyslitelný"],["undermine","podkopat"],["pragmatic","pragmatický"],["elaborate","podrobně rozvést"]],
+    ["ubiquitous","všudypřítomný","Smartphones are ubiquitous today."],["mitigate","zmírnit","We need to mitigate the risks."],
+    ["scrutiny","podrobné zkoumání","The plan faced public scrutiny."],["ambiguous","nejednoznačný","The answer was ambiguous."],
+    ["resilient","odolný","Children are often very resilient."],["perpetual","věčný","He lives in perpetual fear."],
+    ["inherent","vlastní, neodmyslitelný","Risk is inherent in business."],["undermine","podkopat","Rumours undermine trust."],
+    ["pragmatic","pragmatický","She takes a pragmatic approach."],["elaborate","podrobně rozvést","Could you elaborate on that?"]],
     sentences: [
       ["Not only ___ he late, but he was rude.","was","Nejenže přišel pozdě, ale byl i hrubý."],["It is high time we ___ a decision.","made","Je nejvyšší čas se rozhodnout."],
       ["She came across ___ an old friend.","as","Působila jako stará přítelkyně."],["Seldom ___ such talent.","do we see","Takový talent vidíme zřídka."]] },
   C2: { name: "Mistrovská", words: [
-    ["ephemeral","pomíjivý"],["obfuscate","zatemnit"],["quintessential","typický, dokonalý"],["magnanimous","velkorysý"],["recalcitrant","vzpurný"],
-    ["perfunctory","povrchní, formální"],["laconic","stručný"],["acquiesce","přivolit"],["sycophant","patolízal"],["equivocal","dvojsmyslný"]],
+    ["ephemeral","pomíjivý","Fame can be ephemeral."],["obfuscate","zatemnit","Do not obfuscate the facts."],
+    ["quintessential","typický, dokonalý","He is the quintessential gentleman."],["magnanimous","velkorysý","She was magnanimous in victory."],
+    ["recalcitrant","vzpurný","The recalcitrant student ignored us."],["perfunctory","povrchní, formální","He gave a perfunctory nod."],
+    ["laconic","stručný","His laconic reply ended the talk."],["acquiesce","přivolit","They finally acquiesced to our demands."],
+    ["sycophant","patolízal","The boss was surrounded by sycophants."],["equivocal","dvojsmyslný","The results were equivocal."]],
     sentences: [
       ["Were it not for her help, I ___ failed.","would have","Nebýt její pomoci, selhal bych."],["So ___ was the noise that nobody slept.","loud","Hluk byl tak silný, že nikdo nespal."],
       ["He ___ the offer with disdain.","spurned","Nabídku s opovržením odmítl."],["The report is ___ lacking in detail.","woefully","Zpráva je žalostně nedostatečná."]] }
@@ -130,18 +148,31 @@ function viewLevel() {
   });
 }
 
+function speak(text) {
+  if (!("speechSynthesis" in window)) { $("#speechNote").hidden = false; return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-GB"; u.rate = .9;
+  speechSynthesis.speak(u);
+}
+
 function viewCards() {
   const words = LEVELS[level].words; let i = 0, flipped = false;
   const draw = () => {
-    const [en, cs] = words[i];
+    const [en, cs, example] = words[i];
     app.innerHTML = `<div class="card"><p class="muted">Kartička ${i + 1} / ${words.length} · úroveň ${level}</p>
       <div class="flash" tabindex="0" role="button" aria-label="Otočit kartičku">${esc(flipped ? cs : en)}</div>
       <p class="muted">Klikněte nebo stiskněte mezerník pro otočení.</p>
+      <p class="example" lang="en">${esc(example)}</p>
+      <div class="row" style="justify-content:flex-start"><button id="sayWord">🔊 Slovo</button><button id="saySentence">🔊 Věta</button></div>
+      <p class="muted" id="speechNote" hidden>Váš prohlížeč nepodporuje čtení nahlas.</p>
       <div class="row"><button id="prev">← Předchozí</button><button id="next" class="primary">Další →</button></div></div>`;
     const f = app.querySelector(".flash");
     const flip = () => { flipped = !flipped; draw(); app.querySelector(".flash").focus(); };
     f.onclick = flip;
     f.onkeydown = e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); } };
+    $("#sayWord").onclick = () => speak(en);
+    $("#saySentence").onclick = () => speak(example);
     $("#prev").onclick = () => { i = (i - 1 + words.length) % words.length; flipped = false; draw(); };
     $("#next").onclick = () => { i = (i + 1) % words.length; flipped = false; draw(); };
   };
