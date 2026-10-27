@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Angličtina – procvičování</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --card: #fff; --text: #1d2433; --muted: #5d6882;
+    --accent: #3b5bdb; --ok: #2b8a3e; --bad: #c92a2a; --border: #d5dbe8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #12151c; --card: #1c212c; --text: #e8ecf5; --muted: #9aa5bf; --accent: #748ffc; --ok: #51cf66; --bad: #ff6b6b; --border: #2f3748; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; }
+  header { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; justify-content: space-between; padding: .75rem 1rem; background: var(--card); border-bottom: 1px solid var(--border); }
+  header h1 { font-size: 1.15rem; margin: 0; }
+  nav { display: flex; gap: .4rem; flex-wrap: wrap; }
+  main { max-width: 640px; margin: 1.5rem auto; padding: 0 1rem; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem; }
+  button { font: inherit; cursor: pointer; border: 1px solid var(--border); background: var(--card); color: var(--text); padding: .5rem .9rem; border-radius: 8px; }
+  button:hover { border-color: var(--accent); }
+  button:focus-visible, input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  nav button[aria-current="true"] { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .levels { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; }
+  .levels button { padding: 1rem; font-size: 1.1rem; }
+  .levels small { display: block; color: var(--muted); font-size: .75rem; }
+  .flash { min-height: 150px; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 1.8rem; cursor: pointer; user-select: none; border: 2px dashed var(--border); border-radius: 12px; }
+  .options { display: grid; gap: .5rem; margin-top: 1rem; }
+  .options button { text-align: left; }
+  .correct { border-color: var(--ok) !important; background: color-mix(in srgb, var(--ok) 18%, transparent) !important; }
+  .wrong { border-color: var(--bad) !important; background: color-mix(in srgb, var(--bad) 18%, transparent) !important; }
+  .row { display: flex; gap: .5rem; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-top: 1rem; }
+  input[type=text] { font: inherit; padding: .5rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text); width: 9rem; }
+  .muted { color: var(--muted); font-size: .9rem; }
+  .feedback { min-height: 1.5rem; margin-top: .75rem; font-weight: 600; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: .6rem; text-align: center; }
+  .stats b { display: block; font-size: 1.6rem; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🇬🇧 Angličtina</h1>
+  <nav id="nav" hidden aria-label="Hlavní menu">
+    <button data-view="cards">Kartičky</button>
+    <button data-view="quiz">Kvíz</button>
+    <button data-view="fill">Doplňování</button>
+    <button data-view="stats">Statistiky</button>
+    <button data-view="level">Úroveň: <span id="levelLabel"></span></button>
+  </nav>
+</header>
+<main id="app"></main>
+
+<script>
+/* ============ DATA (rozšiřujte zde) ============
+   words: { en, cs }
+   sentences: { text: věta s "___", answer: správné slovo, cs: překlad }  */
+const LEVELS = {
+  A1: { name: "Začátečník", words: [
+    ["house","dům"],["water","voda"],["friend","kamarád"],["book","kniha"],["dog","pes"],
+    ["eat","jíst"],["big","velký"],["red","červený"],["school","škola"],["morning","ráno"]],
+    sentences: [
+      ["I ___ a student.","am","Jsem student."],["She ___ a dog.","has","Ona má psa."],
+      ["We ___ apples.","like","Máme rádi jablka."],["He ___ to school.","goes","Chodí do školy."]] },
+  A2: { name: "Mírně pokročilý", words: [
+    ["borrow","půjčit si"],["weather","počasí"],["ticket","jízdenka"],["usually","obvykle"],["dangerous","nebezpečný"],
+    ["invite","pozvat"],["language","jazyk"],["holiday","dovolená"],["expensive","drahý"],["neighbour","soused"]],
+    sentences: [
+      ["Yesterday I ___ to the cinema.","went","Včera jsem šel do kina."],["She is ___ than her sister.","taller","Je vyšší než její sestra."],
+      ["I have ___ finished my homework.","already","Už jsem dokončil domácí úkol."],["There isn't ___ milk.","any","Není tu žádné mléko."]] },
+  B1: { name: "Středně pokročilý", words: [
+    ["achieve","dosáhnout"],["environment","životní prostředí"],["experience","zkušenost"],["improve","zlepšit"],["opportunity","příležitost"],
+    ["suggest","navrhnout"],["decision","rozhodnutí"],["although","ačkoli"],["avoid","vyhnout se"],["reliable","spolehlivý"]],
+    sentences: [
+      ["If I ___ rich, I would travel.","were","Kdybych byl bohatý, cestoval bych."],["She suggested ___ early.","leaving","Navrhla odejít brzy."],
+      ["I've lived here ___ 2015.","since","Bydlím tu od roku 2015."],["The book ___ written by him.","was","Knihu napsal on."]] },
+  B2: { name: "Pokročilý", words: [
+    ["reluctant","neochotný"],["establish","založit"],["consequence","důsledek"],["Furthermore","navíc"],["overcome","překonat"],
+    ["assume","předpokládat"],["witness","svědek"],["thorough","důkladný"],["predict","předpovědět"],["valid","platný"]],
+    sentences: [
+      ["Had I known, I ___ have helped.","would","Kdybych to věděl, pomohl bych."],["He insisted ___ paying.","on","Trval na tom, že zaplatí."],
+      ["She is said ___ a genius.","to be","Říká se, že je génius."],["I'm used ___ early.","to getting up","Jsem zvyklý vstávat brzy."]] },
+  C1: { name: "Velmi pokročilý", words: [
+    ["ubiquitous","všudypřítomný"],["mitigate","zmírnit"],["scrutiny","podrobné zkoumání"],["ambiguous","nejednoznačný"],["resilient","odolný"],
+    ["perpetual","věčný"],["inherent","vlastní, neodmyslitelný"],["undermine","podkopat"],["pragmatic","pragmatický"],["elaborate","podrobně rozvést"]],
+    sentences: [
+      ["Not only ___ he late, but he was rude.","was","Nejenže přišel pozdě, ale byl i hrubý."],["It is high time we ___ a decision.","made","Je nejvyšší čas se rozhodnout."],
+      ["She came across ___ an old friend.","as","Působila jako stará přítelkyně."],["Seldom ___ such talent.","do we see","Takový talent vidíme zřídka."]] },
+  C2: { name: "Mistrovská", words: [
+    ["ephemeral","pomíjivý"],["obfuscate","zatemnit"],["quintessential","typický, dokonalý"],["magnanimous","velkorysý"],["recalcitrant","vzpurný"],
+    ["perfunctory","povrchní, formální"],["laconic","stručný"],["acquiesce","přivolit"],["sycophant","patolízal"],["equivocal","dvojsmyslný"]],
+    sentences: [
+      ["Were it not for her help, I ___ failed.","would have","Nebýt její pomoci, selhal bych."],["So ___ was the noise that nobody slept.","loud","Hluk byl tak silný, že nikdo nespal."],
+      ["He ___ the offer with disdain.","spurned","Nabídku s opovržením odmítl."],["The report is ___ lacking in detail.","woefully","Zpráva je žalostně nedostatečná."]] }
+};
+const LEVEL_KEYS = Object.keys(LEVELS);
+
+/* ============ STAV A ULOŽENÍ ============ */
+const store = {
+  get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+};
+let level = store.get("level", null);
+let stats = store.get("stats", { quiz: { ok: 0, total: 0 }, fill: { ok: 0, total: 0 } });
+const $ = s => document.querySelector(s);
+const app = $("#app");
+const rnd = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => [...arr].sort(() => Math.random() - .5);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const norm = s => s.trim().toLowerCase().replace(/\s+/g, " ");
+function record(kind, ok) { stats[kind].total++; if (ok) stats[kind].ok++; store.set("stats", stats); }
+
+/* ============ POHLEDY ============ */
+function show(view) {
+  $("#nav").hidden = !level;
+  document.querySelectorAll("nav button").forEach(b => b.setAttribute("aria-current", b.dataset.view === view));
+  ({ level: viewLevel, cards: viewCards, quiz: viewQuiz, fill: viewFill, stats: viewStats })[view]();
+}
+
+function viewLevel() {
+  app.innerHTML = `<div class="card"><h2>Jaká je vaše úroveň angličtiny?</h2>
+    <p class="muted">Podle ní vybereme slovíčka a cvičení. Změnit ji můžete kdykoli.</p>
+    <div class="levels">${LEVEL_KEYS.map(k => `<button data-level="${k}" class="${k === level ? "primary" : ""}">${k}<small>${LEVELS[k].name}</small></button>`).join("")}</div></div>`;
+  app.querySelectorAll("[data-level]").forEach(b => b.onclick = () => {
+    level = b.dataset.level; store.set("level", level);
+    $("#levelLabel").textContent = level; show("cards");
+  });
+}
+
+function viewCards() {
+  const words = LEVELS[level].words; let i = 0, flipped = false;
+  const draw = () => {
+    const [en, cs] = words[i];
+    app.innerHTML = `<div class="card"><p class="muted">Kartička ${i + 1} / ${words.length} · úroveň ${level}</p>
+      <div class="flash" tabindex="0" role="button" aria-label="Otočit kartičku">${esc(flipped ? cs : en)}</div>
+      <p class="muted">Klikněte nebo stiskněte mezerník pro otočení.</p>
+      <div class="row"><button id="prev">← Předchozí</button><button id="next" class="primary">Další →</button></div></div>`;
+    const f = app.querySelector(".flash");
+    const flip = () => { flipped = !flipped; draw(); app.querySelector(".flash").focus(); };
+    f.onclick = flip;
+    f.onkeydown = e => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); flip(); } };
+    $("#prev").onclick = () => { i = (i - 1 + words.length) % words.length; flipped = false; draw(); };
+    $("#next").onclick = () => { i = (i + 1) % words.length; flipped = false; draw(); };
+  };
+  draw();
+}
+
+function viewQuiz() {
+  const words = LEVELS[level].words;
+  const next = () => {
+    const [en, cs] = rnd(words);
+    const options = shuffle([cs, ...shuffle(words.filter(w => w[1] !== cs)).slice(0, 3).map(w => w[1])]);
+    app.innerHTML = `<div class="card"><p class="muted">Co znamená:</p><h2>${esc(en)}</h2>
+      <div class="options">${options.map((o, n) => `<button data-o="${esc(o)}">${n + 1}. ${esc(o)}</button>`).join("")}</div>
+      <div class="feedback" aria-live="polite"></div><div class="row"><span class="muted">Tip: klávesy 1–4</span><button id="next" class="primary" hidden>Další →</button></div></div>`;
+    let done = false;
+    const answer = btn => {
+      if (done) return; done = true;
+      const ok = btn.dataset.o === cs; record("quiz", ok);
+      app.querySelectorAll(".options button").forEach(b => { b.disabled = true; if (b.dataset.o === cs) b.classList.add("correct"); });
+      if (!ok) btn.classList.add("wrong");
+      app.querySelector(".feedback").textContent = ok ? "✅ Správně!" : `❌ Správně: ${cs}`;
+      $("#next").hidden = false; $("#next").focus();
+    };
+    app.querySelectorAll(".options button").forEach(b => b.onclick = () => answer(b));
+    quizKeys = e => { const b = app.querySelectorAll(".options button")[+e.key - 1]; if (b) answer(b); };
+    $("#next").onclick = next;
+  };
+  next();
+}
+let quizKeys = null;
+document.addEventListener("keydown", e => { if (quizKeys && app.querySelector(".options") && !e.target.matches("input")) quizKeys(e); });
+
+function viewFill() {
+  quizKeys = null;
+  const next = () => {
+    const [text, answer, cs] = rnd(LEVELS[level].sentences);
+    app.innerHTML = `<div class="card"><p class="muted">Doplňte chybějící slovo:</p>
+      <h2>${esc(text).replace("___", "<u>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</u>")}</h2><p class="muted">${esc(cs)}</p>
+      <form class="row" style="justify-content:flex-start"><input type="text" id="ans" autocomplete="off" aria-label="Odpověď" autofocus>
+      <button class="primary" type="submit">Zkontrolovat</button></form>
+      <div class="feedback" aria-live="polite"></div><div class="row"><span></span><button id="next" hidden class="primary">Další →</button></div></div>`;
+    $("#ans").focus();
+    app.querySelector("form").onsubmit = e => {
+      e.preventDefault();
+      if ($("#next").hidden === false) return;
+      const ok = norm($("#ans").value) === norm(answer); record("fill", ok);
+      app.querySelector(".feedback").textContent = ok ? "✅ Správně!" : `❌ Správně: ${answer}`;
+      $("#ans").disabled = true; $("#next").hidden = false; $("#next").focus();
+    };
+    $("#next").onclick = next;
+  };
+  next();
+}
+
+function viewStats() {
+  const pct = s => s.total ? Math.round(100 * s.ok / s.total) + " %" : "–";
+  const box = (t, s) => `<div class="card"><h3>${t}</h3><div class="stats">
+    <div><b>${s.total}</b>odpovědí</div><div><b>${s.ok}</b>správně</div><div><b>${pct(s)}</b>úspěšnost</div></div></div>`;
+  app.innerHTML = box("Kvíz", stats.quiz) + box("Doplňování vět", stats.fill) +
+    `<button id="reset">Vynulovat statistiky</button>`;
+  $("#reset").onclick = () => { if (confirm("Opravdu vynulovat statistiky?")) { stats = { quiz: { ok: 0, total: 0 }, fill: { ok: 0, total: 0 } }; store.set("stats", stats); viewStats(); } };
+}
+
+/* ============ START ============ */
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => { quizKeys = null; show(b.dataset.view); });
+if (!LEVELS[level]) level = null;
+$("#levelLabel").textContent = level || "";
+show(level ? "cards" : "level");
+</script>
+</body>
+</html>
